@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Weather Forecast</title>
+</head>
+<body>
+	<h1 style='text-align: center'>
+		Weather in <span th:text="${weather.city}"></span>
+	</h1>
+	<p style='text-align: center'>
+		Temperature: <span th:text="${weather.temperature}"></span> °C
+	</p>
+	<p style='text-align: center'>
+		Condition: <span th:text="${weather.condition}"></span>
+	</p>
+</body>
+</html>
