@@ -18,7 +18,11 @@ public class WeatherController {
 	@GetMapping("/weather")
 	public String getWeather(@RequestParam String city, Model model) {
 		Weather weather = weatherService.getWeather(city);
+		if (weather == null) {
+			model.addAttribute("error", "City not found or incorrect city name. Please try again.");
+			return "weather"; // return to the weather page with an error
+		}
 		model.addAttribute("weather", weather);
-		return "weather";
+		return "weather"; // return to the weather page with data
 	}
 }

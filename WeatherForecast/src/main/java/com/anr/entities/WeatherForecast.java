@@ -1,20 +1,17 @@
 package com.anr.entities;
 
-import java.util.List;
+public class WeatherForecast {
 
-public class Weather {
-
-	private String city;
+	private String date;
 	private double temperature;
 	private String condition;
-	private List<WeatherForecast> forecast;
 
-	public String getCity() {
-		return city;
+	public String getDate() {
+		return date;
 	}
 
-	public void setCity(String city) {
-		this.city = city;
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	public double getTemperature() {
@@ -31,14 +28,6 @@ public class Weather {
 
 	public void setCondition(String condition) {
 		this.condition = condition;
-	}
-
-	public List<WeatherForecast> getForecast() {
-		return forecast;
-	}
-
-	public void setForecast(List<WeatherForecast> forecast) {
-		this.forecast = forecast;
 	}
 
 }
