@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Confirmation</title>
+</head>
+<body>
+    <h1>Confirm Your Order</h1>
+    <p>Item: <span th:text="${item.name}"></span></p>
+    <p>Quantity: <span th:text="${quantity}"></span></p>
+    <p>Total Price: $<span th:text="${totalPrice}"></span></p>
+
+    <form action="/confirmOrder" method="post">
+        <input type="hidden" name="itemId" th:value="${item.id}"/>
+        <input type="hidden" name="quantity" th:value="${quantity}"/>
+        <button type="submit">Pay and Confirm Order</button>
+    </form>
+</body>
+</html>
