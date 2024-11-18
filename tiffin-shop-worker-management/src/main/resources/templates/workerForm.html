@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Add/Edit Worker</title>
+<style>
+label {
+	display: block;
+	margin-top: 10px;
+}
+
+input[type="text"], input[type="number"], input[type="password"], select
+	{
+	padding: 5px;
+	margin-top: 5px;
+	width: 200px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.btn {
+	padding: 10px 15px;
+	margin-top: 15px;
+	background-color: green;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.btn-cancel {
+	background-color: red;
+}
+</style>
+</head>
+<body>
+	<h1 th:text="${worker.id != null ? 'Edit Worker' : 'Add New Worker'}"></h1>
+
+	<form th:action="@{/shop/worker/add}" th:object="${worker}"
+		method="post">
+
+		<label for="name">Name:</label> <input type="text" id="name"
+			th:field="*{name}" required="true" /> <label for="role">Role:</label>
+		<input type="text" id="role" th:field="*{role}" required="true" /> <label
+			for="attendedDays">Attended Days:</label> <input type="number"
+			id="attendedDays" th:field="*{attendedDays}" required="true" /> <label
+			for="salary">Salary:</label> <input type="number" id="salary"
+			th:field="*{salary}" required="true" /> <br>
+
+		<button type="submit" class="btn">Save</button>
+
+		<!-- Cancel button to go back to workers list -->
+		<a href="/shop/workers" class="btn btn-cancel">Cancel</a>
+	</form>
+</body>
+</html>
