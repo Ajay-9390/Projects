@@ -87,7 +87,6 @@ th {
 				<th>Role</th>
 				<th>Attended Days</th>
 				<th>Salary</th>
-				<th>Actions</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -96,28 +95,9 @@ th {
 				<td th:text="${worker.role}"></td>
 				<td th:text="${worker.attendedDays}"></td>
 				<td th:text="${worker.salary}"></td>
-				<td class="actions">
-					<!-- Edit and Delete actions for admin only -->
-					<div sec:authorize="hasRole('ADMIN')">
-						<span style="display: inline-flex; gap: 10px;"> <a
-							th:href="@{/shop/worker/edit(id=${worker.id})}"
-							class="btn btn-primary">Edit</a>
-							<form th:action="@{/shop/worker/delete/{id}(id=${worker.id})}"
-								method="POST"
-								onsubmit="return confirm('Are you sure you want to delete this worker?');">
-								<button type="submit" class="btn btn-danger">Delete</button>
-							</form>
-						</span>
-					</div> <!-- User can only view the data (no actions) -->
-				</td>
 			</tr>
 		</tbody>
 
 	</table>
-
-	<div>
-		<a href="/shop/worker/add" class="add-worker-button">Add Worker</a>
-	</div>
-
 </body>
 </html>

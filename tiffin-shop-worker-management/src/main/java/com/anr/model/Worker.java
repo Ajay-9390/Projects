@@ -11,7 +11,7 @@ public class Worker {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private String role; // "Chef", "Packing Staff", "Cleaning Staff"
+	private String role;
 	private double salary;
 	private int attendedDays;
 

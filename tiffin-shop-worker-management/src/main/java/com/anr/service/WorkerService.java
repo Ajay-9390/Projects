@@ -29,7 +29,7 @@ public class WorkerService {
 	public void updateWorker(Long id, Worker workerDetails) {
 		// Find the existing worker by ID
 		Worker existingWorker = workerRepository.findById(id)
-				.orElseThrow(() -> new WorkerNotFoundException("Worker not found"));
+				.orElseThrow(() -> new WorkerNotFoundException("Worker not found with id " + id));
 
 		// Update the existing worker details with new values
 		existingWorker.setName(workerDetails.getName());

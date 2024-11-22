@@ -1,19 +1,21 @@
 package com.anr.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.anr.model.Worker;
 import com.anr.service.WorkerService;
 
@@ -24,79 +26,92 @@ public class WorkerController {
 	@Autowired
 	private WorkerService workerService;
 
+	// Adding new worker
 	// Admin-specific endpoint to show the form for adding a new worker
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/worker/add")
 	public String showAddWorkerForm(Model model) {
-		model.addAttribute("worker", new Worker()); // Provide an empty Worker object for the form
-		return "workerForm"; // Thymeleaf template for adding worker
+		model.addAttribute("worker", new Worker());
+		return "workerForm";
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/worker/add")
 	public String addWorker(@Validated Worker worker, BindingResult result) {
 		if (result.hasErrors()) {
-			return "workerForm"; // Return to the form page with validation errors
+			return "workerForm";
 		}
 
 		// Calculate the salary based on attended days and salary per day
 		double totalSalary = worker.getSalary() * worker.getAttendedDays();
-		worker.setSalary(totalSalary); // Set the calculated total salary
-
-		workerService.addWorker(worker); // Save the worker with calculated salary
-		return "redirect:/shop/workers"; // Redirect to the workers list page
+		worker.setSalary(totalSalary);
+		workerService.addWorker(worker);
+		return "redirect:/shop/workers";
 	}
 
+	// edit existing worker
 	// Admin-specific endpoint to show the form for editing an existing worker
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/worker/edit")
-	public String showEditWorkerForm(@RequestParam("id") Long id, Model model) {
+	@GetMapping("/worker/edit/{id}")
+	public String showEditWorkerForm(@PathVariable Long id, Model model) {
 		Worker worker = workerService.getWorkerById(id);
 		if (worker == null) {
-			return "redirect:/shop/workers?error=workerNotFound"; // Redirect if worker not found
+			return "redirect:/shop/workers?error=workerNotFound";
 		}
-		model.addAttribute("worker", worker); // Add the worker details to the model
-		return "workerForm"; // Thymeleaf template for editing worker
+		model.addAttribute("worker", worker);
+		return "workerForm";
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/worker/edit")
-	public String updateWorker(@RequestParam("id") Long id, @Validated Worker workerDetails, BindingResult result) {
+	public String updateWorker(@RequestParam Long id, @Validated Worker workerDetails, BindingResult result) {
 		if (result.hasErrors()) {
-			return "workerForm"; // Return to the form page with validation errors
+			return "workerForm";
 		}
 
 		// Calculate the new total salary based on attended days and salary per day
 		double totalSalary = workerDetails.getSalary() * workerDetails.getAttendedDays();
-		workerDetails.setSalary(totalSalary); // Set the calculated salary
-
-		// Update the worker's details by passing the worker ID and the updated Worker
-		// object
+		workerDetails.setSalary(totalSalary);
 		workerService.updateWorker(id, workerDetails);
-
-		return "redirect:/shop/workers"; // Redirect to the workers list page
+		return "redirect:/shop/workers";
 	}
 
+	// delete worker
 	// Admin-specific endpoint to delete a worker
 	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping("/worker/delete")
-	public String deleteWorker(@RequestParam("id") Long id) {
+	@PostMapping("/worker/delete/")
+	public String deleteWorker(@RequestParam Long id) {
 		Worker worker = workerService.getWorkerById(id);
 		if (worker == null) {
-			return "redirect:/shop/workers?error=workerNotFound"; // Redirect if worker not found
+			return "redirect:/shop/workers?error=WorkerNotFound"; // Redirect if worker not found
+		} else {
+			workerService.deleteWorker(id);
 		}
-		workerService.deleteWorker(id); // Delete the worker
 		return "redirect:/shop/workers"; // Redirect to the workers list page after success
 	}
 
+	// display workers
 	// Worker and Admin-specific endpoint to view all workers
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@GetMapping("/workers")
 	public String viewWorkers(Model model) {
-		List<Worker> workers = workerService.getAllWorkers(); // Fetch all workers model.addAttribute("workers",
-		model.addAttribute("workers", workers); // workers); // Add the list of workers to the model
-		return "workersList"; // Thymeleaf template to display
-		// worker details
+
+		// Get the current authenticated user's authorities
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		List<Worker> workers = workerService.getAllWorkers();
+		model.addAttribute("workers", workers);
+		String viewName = null;
+
+		// Check if the user has the ROLE_ADMIN authority
+		for (GrantedAuthority authority : authentication.getAuthorities()) {
+			if ("ROLE_ADMIN".equals(authority.getAuthority())) {
+				viewName = "workersList";
+			} else {
+				viewName = "workersList2";
+			}
+		}
+		return viewName;
+
 	}
 
 }
