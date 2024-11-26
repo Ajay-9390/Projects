@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<title>EMPLOYEES LIST</title>
+<title>WORKERS LIST</title>
 <style>
 body {
 	font-family: Arial, sans-serif;
@@ -78,7 +78,7 @@ th {
 </head>
 <body>
 
-	<h1>EMPLOYEES LIST</h1>
+	<h1>WORKERS LIST</h1>
 
 	<table>
 		<thead>
@@ -94,7 +94,7 @@ th {
 				<td th:text="${worker.name}"></td>
 				<td th:text="${worker.role}"></td>
 				<td th:text="${worker.attendedDays}"></td>
-				<td th:text="${worker.salary}"></td>
+				<td th:text="${worker.totalSalary}"></td>
 			</tr>
 		</tbody>
 

@@ -43,8 +43,8 @@ public class WorkerController {
 		}
 
 		// Calculate the salary based on attended days and salary per day
-		double totalSalary = worker.getSalary() * worker.getAttendedDays();
-		worker.setSalary(totalSalary);
+		double totalSalary = worker.getSalaryPerDay() * worker.getAttendedDays();
+		worker.setTotalSalary(totalSalary);
 		workerService.addWorker(worker);
 		return "redirect:/shop/workers";
 	}
@@ -54,12 +54,17 @@ public class WorkerController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/worker/edit/{id}")
 	public String showEditWorkerForm(@PathVariable Long id, Model model) {
-		Worker worker = workerService.getWorkerById(id);
+		Worker worker = workerService.getWorkerById(id); // This could be null or an Optional
+
 		if (worker == null) {
-			return "redirect:/shop/workers?error=workerNotFound";
+			// If worker is null, redirect with error message
+			model.addAttribute("errorMessage",
+					"Worker not found with ID " + id + ". Please try again with a valid ID.");
+			return "workersList"; // Assuming this is the workers list page
 		}
+
 		model.addAttribute("worker", worker);
-		return "workerForm";
+		return "workerForm"; // This is the form for editing the worker
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
@@ -70,8 +75,8 @@ public class WorkerController {
 		}
 
 		// Calculate the new total salary based on attended days and salary per day
-		double totalSalary = workerDetails.getSalary() * workerDetails.getAttendedDays();
-		workerDetails.setSalary(totalSalary);
+		double totalSalary = workerDetails.getSalaryPerDay() * workerDetails.getAttendedDays();
+		workerDetails.setSalaryPerDay(totalSalary);
 		workerService.updateWorker(id, workerDetails);
 		return "redirect:/shop/workers";
 	}
@@ -79,11 +84,27 @@ public class WorkerController {
 	// delete worker
 	// Admin-specific endpoint to delete a worker
 	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping("/worker/delete/")
-	public String deleteWorker(@RequestParam Long id) {
+	@PostMapping("/worker/delete/{id}")
+	public String deleteWorkerByPost(@PathVariable Long id, Model model) {
 		Worker worker = workerService.getWorkerById(id);
 		if (worker == null) {
-			return "redirect:/shop/workers?error=WorkerNotFound"; // Redirect if worker not found
+			model.addAttribute("errorMessage",
+					"Worker not found with ID " + id + ". Please try again with a valid ID.");
+			return "workersList";
+		} else {
+			workerService.deleteWorker(id);
+		}
+		return "redirect:/shop/workers"; // Redirect to the workers list page after success
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/worker/delete/{id}")
+	public String deleteWorkerByGet(@PathVariable Long id, Model model) {
+		Worker worker = workerService.getWorkerById(id);
+		if (worker == null) {
+			model.addAttribute("errorMessage",
+					"Worker not found with ID " + id + ". Please try again with a valid ID.");
+			return "workersList";
 		} else {
 			workerService.deleteWorker(id);
 		}

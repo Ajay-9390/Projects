@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<title>EMPLOYEES LIST</title>
+<title>WORKERS LIST</title>
 <style>
 body {
 	font-family: Arial, sans-serif;
@@ -78,9 +78,15 @@ th {
 </head>
 <body>
 
-	<h1>EMPLOYEES LIST</h1>
+	<h1 th:if="${errorMessage == null}">WORKERS LIST</h1>
 
-	<table>
+	<div th:if="${errorMessage}">
+		<p th:text="${errorMessage}" style="color: red;"></p>
+		<!-- Show the Go Back button instead of the Add Worker button -->
+		<a href="/shop/workers" class="btn btn-cancel">Go Back</a>
+	</div>
+
+	<table th:if="${workers !=null}">
 		<thead>
 			<tr>
 				<th>Name</th>
@@ -95,12 +101,12 @@ th {
 				<td th:text="${worker.name}"></td>
 				<td th:text="${worker.role}"></td>
 				<td th:text="${worker.attendedDays}"></td>
-				<td th:text="${worker.salary}"></td>
+				<td th:text="${worker.totalSalary}"></td>
 				<td class="actions">
 					<!-- Edit and Delete actions for admin only -->
 					<div sec:authorize="hasRole('ADMIN')">
 						<span style="display: inline-flex; gap: 10px;"> <a
-							th:href="@{/shop/worker/edit(id=${worker.id})}"
+							th:href="@{/shop/worker/edit/{id}(id=${worker.id})}"
 							class="btn btn-primary">Edit</a>
 							<form th:action="@{/shop/worker/delete/{id}(id=${worker.id})}"
 								method="POST"
@@ -115,7 +121,7 @@ th {
 
 	</table>
 
-	<div>
+	<div th:if="${errorMessage == null}">
 		<a href="/shop/worker/add" class="add-worker-button">Add Worker</a>
 	</div>
 

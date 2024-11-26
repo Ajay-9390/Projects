@@ -8,8 +8,7 @@ label {
 	margin-top: 10px;
 }
 
-input[type="text"], input[type="number"], input[type="password"], select
-	{
+input[type="text"], input[type="number"], select {
 	padding: 5px;
 	margin-top: 5px;
 	width: 200px;
@@ -29,26 +28,42 @@ input[type="text"], input[type="number"], input[type="password"], select
 
 .btn-cancel {
 	background-color: red;
+	text-decoration: none;
+	padding: 10px 15px;
+	border-radius: 5px;
+	color: white;
+	margin-left: 10px;
+}
+
+.btn-cancel:hover {
+	background-color: darkred;
 }
 </style>
 </head>
 <body>
 	<h1 th:text="${worker.id != null ? 'Edit Worker' : 'Add New Worker'}"></h1>
 
-	<form th:action="@{/shop/worker/add}" th:object="${worker}"
-		method="post">
+	<form
+		th:action="@{${worker.id != null} ? '/shop/worker/edit' : '/shop/worker/add'}"
+		th:object="${worker}" method="post">
 
+		<!-- Hidden field for Worker ID -->
+		<input type="hidden" th:field="*{id}" />
+
+		<!-- Input fields for worker details -->
 		<label for="name">Name:</label> <input type="text" id="name"
-			th:field="*{name}" required="true" /> <label for="role">Role:</label>
-		<input type="text" id="role" th:field="*{role}" required="true" /> <label
-			for="attendedDays">Attended Days:</label> <input type="number"
-			id="attendedDays" th:field="*{attendedDays}" required="true" /> <label
-			for="salary">Salary:</label> <input type="number" id="salary"
-			th:field="*{salary}" required="true" /> <br>
+			th:field="*{name}" required />
+		<label for="role">Role:</label> <input type="text" id="role"
+			th:field="*{role}" required />
+		<label for="attendedDays">Attended Days:</label> <input type="number"
+			id="attendedDays" th:field="*{attendedDays}" required />
+		<label for="salaryPerDay">Salary per Day:</label> <input type="number"
+			id="salaryPerDay" th:field="*{salaryPerDay}" required />
 
+		<!-- Submit button -->
 		<button type="submit" class="btn">Save</button>
 
-		<!-- Cancel button to go back to workers list -->
+		<!-- Cancel button -->
 		<a href="/shop/workers" class="btn btn-cancel">Cancel</a>
 	</form>
 </body>

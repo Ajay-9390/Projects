@@ -35,7 +35,8 @@ public class WorkerService {
 		existingWorker.setName(workerDetails.getName());
 		existingWorker.setRole(workerDetails.getRole());
 		existingWorker.setAttendedDays(workerDetails.getAttendedDays());
-		existingWorker.setSalary(workerDetails.getSalary()); // Update the salary with the new calculated value
+		existingWorker.setTotalSalary(workerDetails.getSalaryPerDay()); // Update the salary with the new calculated
+																		// value
 
 		// Save the updated worker back to the database
 		workerRepository.save(existingWorker);
@@ -46,7 +47,11 @@ public class WorkerService {
 	}
 
 	public Worker getWorkerById(Long id) {
-		return workerRepository.findById(id)
-				.orElseThrow(() -> new WorkerNotFoundException("Worker not found with id " + id));
+		Worker worker = workerRepository.findById(id).orElse(null); // Return null if not found
+		if (worker != null) {
+			worker.setSalaryPerDay(worker.getTotalSalary() / worker.getAttendedDays());
+		}
+		return worker;
 	}
+
 }

@@ -12,8 +12,13 @@ public class Worker {
 	private Long id;
 	private String name;
 	private String role;
-	private double salary;
+	private double salaryPerDay;
+	private double totalSalary;
 	private int attendedDays;
+
+	public Worker() {
+		super();
+	}
 
 	public Long getId() {
 		return id;
@@ -39,12 +44,20 @@ public class Worker {
 		this.role = role;
 	}
 
-	public double getSalary() {
-		return salary;
+	public double getSalaryPerDay() {
+		return salaryPerDay;
 	}
 
-	public void setSalary(double salary) {
-		this.salary = salary;
+	public void setSalaryPerDay(double salaryPerDay) {
+		this.salaryPerDay = salaryPerDay;
+	}
+
+	public double getTotalSalary() {
+		return totalSalary;
+	}
+
+	public void setTotalSalary(double totalSalary) {
+		this.totalSalary = totalSalary;
 	}
 
 	public int getAttendedDays() {
